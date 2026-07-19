@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYg64P9wryuwAoNK71otobZFXi9m5LM_xF-9hS-qeIlQ&s=10" type="image/x-icon">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Multilink Tool</title>
+</head>
+<style>
+      body {
+            background-color: rgb(203, 203, 236);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+      }
+      #main {
+            background-color: snow;
+            width: 1000px;
+            margin-top: 30px;
+            padding: 15px;
+            padding-top: 0px;
+      }
+      .filesec {
+            background-color: rgb(222, 222, 236);
+            border: 3px solid rgb(203, 203, 236);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            height: 30px;
+            font-family: 'Trebuchet MS';
+      }
+      .filesec:hover {
+            cursor: pointer;
+            background-color: rgb(211, 211, 235);
+      }
+      #acceptfile {
+            width: 30%;
+            float: left;
+            margin-left: 10px;
+      }
+      #console {
+            background-color: rgb(19, 19, 19);
+            color: snow;
+            margin-top: 10px;
+            border: 1px solid black;
+            border-radius: 10px;
+            float: left;
+            padding: 10px;
+            width: 980px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow: auto;
+            padding-top: 0px;
+      }
+      #openreq {
+            width: 40%;
+            float: left;
+            margin-top: 10px;
+            font-family: 'Trebuchet MS';
+            background-color: rgb(222, 222, 236);
+            border: 3px solid rgb(203, 203, 236);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            height: 30px;
+      }
+      #openreq:hover {
+            cursor: pointer;
+            background-color: rgb(211, 211, 235);
+      }
+</style>
+<body>
+      <section id="main">
+            <h2 style="font-weight: bold; font-family: 'Trebuchet MS';">Multilink Tool</h2>
+            <section id="fileframe" class="filesec" style="width: 50%; float: left;"><input type="file" accept=".txt, .rtf, .htm, .html, .xml" id="textfile" name="textfile" style="cursor: pointer;" onchange="setFile(this)"></section>
+            <section id="acceptfile" class="filesec" onclick="chooseFile()"><p>Get Links!</p></section>
+            <section id="console">
+                  <p id="consoletext" style="font-family: monospace; font-size: 17px;">hello...</p>
+            </section>
+      </section>
+      <p style="position: fixed; left: 10px; bottom: -5px;">CornSeller © 2026</p>
+</body>
+<script>
+      let consoletxt = document.getElementById("consoletext");
+      let file = undefined;
+      let urlsPool = [''];
+      let openExists = false;
+      function setFile(input) {
+            file = input.files[0];
+            consoletxt.innerHTML += `<br>Selected file: ${file.name}`;
+      }
+      function chooseFile() {
+            consoletxt.innerHTML += "<br>Reading file...";
+            let reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = function() {
+                  let filetxt = reader.result;
+                  consoletxt.innerHTML += "<br>Characters: " + filetxt.split('').length;
+
+                  let spacesplit = filetxt.split(' ');
+
+                  urlsPool.splice(0, 1);
+                  for(i=0; i<spacesplit.length; i++) {
+                        if (spacesplit[i].startsWith('http')) {
+                              urlsPool.push(spacesplit[i]);
+                              consoletxt.innerHTML += "<br>Filtering in a link..."
+                        }
+                        else {consoletxt.innerHTML += "<br>Filtering out a non-link..."}
+                  }
+                  for (y=0; y<urlsPool.length; y++) {
+                        consoletxt.innerHTML += "<br>" + urlsPool[y];
+                  }
+                  createOpeningReq();
+            }
+            reader.onerror = function() {
+                  consoletxt.innerHTML += `<br><span style="color: red;">` + reader.error + `</span>`;
+            }
+      }
+      function createOpeningReq() {
+            let a = document.getElementById('main');
+            let OpeningReq = document.createElement('section');
+            OpeningReq.setAttribute('id', 'openreq');
+            OpeningReq.setAttribute('onclick', 'UnleashTheTabs()');
+            OpeningReq.innerHTML = "CLICK HERE TO OPEN THEM ALL";
+            if (!openExists) {
+                  a.appendChild(OpeningReq);
+                  openExists = true;
+            }
+      }
+
+      function UnleashTheTabs() {
+            consoletxt.innerHTML += "<br>Opening links in New Tabs...<br><span style='color: red;'>Warning! Your browser might attempt to block this!</span>";
+            for (x=0; x<urlsPool.length; x++) {
+                        window.open(urlsPool[x], '_blank');
+                  }
+      }
+</script>
+</html>
